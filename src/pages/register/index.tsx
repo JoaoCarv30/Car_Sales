@@ -10,7 +10,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import { auth } from '../../services/firebaseConnection';
 import { createUserWithEmailAndPassword, signOut, updateProfile } from 'firebase/auth';
-import { useEffect } from 'react';
+import { useEffect     } from 'react';
 
 
 const schema = z.object({
