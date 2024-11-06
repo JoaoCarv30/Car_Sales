@@ -9,7 +9,8 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { auth } from '../../services/firebaseConnection';
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signOut, updateProfile } from 'firebase/auth';
+import { useEffect } from 'react';
 
 
 const schema = z.object({
@@ -46,6 +47,15 @@ export function Register() {
       })
 
   }
+
+  useEffect(() => {
+    async function handleLogout() {
+      await signOut(auth);
+    }
+     handleLogout();
+   }, []);
+ 
+ 
 
 
   return (
