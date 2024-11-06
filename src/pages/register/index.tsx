@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import logoImg from '../../assets/logo.svg';
 import { Container } from '../../components/container';
 import { Input } from '../../components/input';
@@ -7,6 +7,9 @@ import { Input } from '../../components/input';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+
+import { auth } from '../../services/firebaseConnection';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 
 
 const schema = z.object({
@@ -19,6 +22,8 @@ type FormData = z.infer<typeof schema>;
 
 export function Register() {
 
+  const navigate = useNavigate();
+
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>(
     {
       resolver: zodResolver(schema),
@@ -26,8 +31,20 @@ export function Register() {
     }
   );
 
-  function onsubmit(data: FormData) {
-    console.log(data);
+  async function onsubmit(data: FormData) {
+    createUserWithEmailAndPassword(auth, data.email, data.password)
+      .then(async (user) => {
+        await updateProfile(user.user, {
+          displayName: data.name
+        })
+        console.log(data);
+        navigate('/dashboard'), { replace: true };
+      })
+      .catch((error) => {
+        console.log("erro ao cadastrar usuário");
+        console.log(error);
+      })
+
   }
 
 
@@ -79,7 +96,7 @@ export function Register() {
 
 
           <button
-            className='bg-zinc-900 w-full rounded-md h-11 text-white h-10 font-medium'
+            className='bg-zinc-900 w-full rounded-md h-11 text-white  font-medium'
             type='submit'
           >Acessar</button>
 
